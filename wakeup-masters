@@ -18,10 +18,7 @@ pipeline {
     preserveStashes(buildCount: 5)
   }
   stages {
-    stage('Update Config') {
-      when { 
-        branch 'master'
-      }
+    stage('Wakeup Masters') {
       steps {
         container('kubectl') {
           sh('kubectl -n cje scale --replicas=1 statefulset -l type=master,tenant!=teams-ops')
