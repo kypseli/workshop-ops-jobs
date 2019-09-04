@@ -12,6 +12,7 @@ pipeline {
     cron('5 3 * * 6')
   }
   options { 
+    skipDefaultCheckout()
     buildDiscarder(logRotator(numToKeepStr: '5'))
     preserveStashes(buildCount: 5)
   }
