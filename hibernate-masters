@@ -1,0 +1,30 @@
+library 'kypseli@master'
+def podYaml = libraryResource 'podtemplates/kubectl.yml'
+pipeline {
+  agent {
+    kubernetes {
+      label 'workshop-oc-update'
+      defaultContainer 'jnlp'
+      yaml podYaml
+    }
+  }
+  triggers {
+    cron('5 3 * * 6')
+  }
+  options { 
+    buildDiscarder(logRotator(numToKeepStr: '5'))
+    preserveStashes(buildCount: 5)
+  }
+  stages {
+    stage('Update Config') {
+      when { 
+        branch 'master'
+      }
+      steps {
+        container('kubectl') {
+          sh('kubectl -n cje scale --replicas=0 statefulset -l type=master,tenant!=teams-ops')
+        } 
+      }
+    }
+  }
+}
