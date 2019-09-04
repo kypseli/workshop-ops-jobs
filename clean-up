@@ -1,0 +1,39 @@
+pipeline {
+  agent {
+    kubernetes {
+      label 'workshop-cleanup'
+      defaultContainer 'jnlp'
+      yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+labels:
+  component: ci
+spec:
+  # Use service account that can deploy to all namespaces
+  serviceAccountName: cjoc
+  containers:
+  - name: kubectl
+    image: gcr.io/cloud-builders/kubectl
+    command:
+    - cat
+    tty: true
+  securityContext:
+   runAsUser: 1000
+"""
+}
+  }
+  stages {
+    stage('Clean') {
+      steps {
+        container('kubectl') {
+          sh('kubectl -n cje delete deployment,pod,pvc,ingress,service -l net.beedemo.deploy.type=workshop')
+          sh('kubectl -n cje delete statefulset,pod,pvc,ingress,service -l type=master,tenant!=teams-ops,tenant!=teams-sec,tenant!=teams-dev')
+          sh('kubectl -n cje exec cjoc-0 -c jenkins -- bash -c "cd /var/jenkins_home/ && cp -r /var/jenkins_home/jobs/Teams/jobs/ops/ . && cp -r /var/jenkins_home/jobs/Teams/jobs/sec/ . && cp -r /var/jenkins_home/jobs/Teams/jobs/dev/ ."')
+          sh('kubectl -n cje exec cjoc-0 -c jenkins -- bash -c "cd /var/jenkins_home/jobs/Teams/jobs && rm -rf * && mv /var/jenkins_home/ops/ . && mv /var/jenkins_home/sec/ . && mv /var/jenkins_home/dev/ . && cd /var/jenkins_home/users/ && rm -rf * && cd .. && cp -r beedemoadmin* ./users/ && cp -r beedemoops* ./users/ && cp users.xml ./users/ && cd /var/jenkins_home/ && rm run-time-state.mv.db"')
+          sh('kubectl -n cje exec cjoc-0 -c jenkins reboot')
+        } 
+      }
+    }
+  }
+}
