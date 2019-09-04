@@ -17,10 +17,7 @@ pipeline {
     preserveStashes(buildCount: 5)
   }
   stages {
-    stage('Update Config') {
-      when { 
-        branch 'master'
-      }
+    stage('Hibernate Masters') {
       steps {
         container('kubectl') {
           sh('kubectl -n cje scale --replicas=0 statefulset -l type=master,tenant!=teams-ops')
