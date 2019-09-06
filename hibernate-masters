@@ -20,7 +20,7 @@ pipeline {
     stage('Hibernate Masters') {
       steps {
         container('kubectl') {
-          sh('kubectl -n cje scale --replicas=0 statefulset -l type=master,!hibernate=false,tenant!=teams-ops')
+          sh('kubectl -n cje scale --replicas=0 statefulset -l type=master,hibernate!=false,tenant!=teams-ops')
         } 
       }
     }
