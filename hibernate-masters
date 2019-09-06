@@ -9,7 +9,7 @@ pipeline {
     }
   }
   triggers {
-    cron('5 3 * * 6')
+    cron('5 5 * * 6')
   }
   options { 
     skipDefaultCheckout()
