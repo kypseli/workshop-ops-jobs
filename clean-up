@@ -27,10 +27,10 @@ spec:
     stage('Clean') {
       steps {
         container('kubectl') {
-          sh('kubectl -n cje delete deployment,pod,pvc,ingress,service -l net.beedemo.deploy.type=workshop')
-          sh('kubectl -n cje delete statefulset,pod,pvc,ingress,service -l type=master,tenant!=teams-ops,tenant!=teams-sec,tenant!=teams-dev')
-          sh('kubectl -n cje exec cjoc-0 -c jenkins -- bash -c "cd /var/jenkins_home/jobs/Teams/jobs && rm -rf * && cd /var/jenkins_home/users/ && rm -rf * && cd .. && cp -r beedemoadmin* ./users/ && cp -r beedemoops* ./users/ && cp users.xml ./users/ && cd /var/jenkins_home/ && rm run-time-state.mv.db"')
-          sh('kubectl -n cje exec cjoc-0 -c jenkins reboot')
+          sh('kubectl -n core delete deployment,pod,pvc,ingress,service -l net.beedemo.deploy.type=workshop')
+          sh('kubectl -n core delete statefulset,pod,pvc,ingress,service -l type=master,tenant!=teams-ops,tenant!=teams-sec,tenant!=teams-dev')
+          sh('kubectl -n core exec cjoc-0 -c jenkins -- bash -c "cd /var/jenkins_home/jobs/Teams/jobs && rm -rf * && cd /var/jenkins_home/users/ && rm -rf * && cd .. && cp -r admin* ./users/ && cp -r beedemoops* ./users/ && cp users.xml ./users/ && cd /var/jenkins_home/ && rm run-time-state.mv.db"')
+          sh('kubectl -n core exec cjoc-0 -c jenkins reboot')
         } 
       }
     }
