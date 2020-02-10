@@ -29,7 +29,7 @@ spec:
         container('kubectl') {
           sh('kubectl -n core delete deployment,pod,pvc,ingress,service -l net.beedemo.deploy.type=workshop')
           sh('kubectl -n core delete statefulset,pod,pvc,ingress,service -l type=master,tenant!=teams-ops,tenant!=teams-sec,tenant!=teams-dev')
-          sh('kubectl -n core exec cjoc-0 -c jenkins -- bash -c "cd /var/jenkins_home/jobs/Teams/jobs && rm -rf * && cd /var/jenkins_home/users/ && rm -rf * && cd .. && cp -r admin* ./users/ && cp -r beedemoops* ./users/ && cp users.xml ./users/ && cd /var/jenkins_home/ && rm run-time-state.mv.db"')
+          sh('kubectl -n core exec cjoc-0 -c jenkins -- bash -c "cd /var/jenkins_home/jobs/Teams/jobs && mv ops /var/jenkins_home && rm -rf * && mv /var/jenkins_home/ops/ . && cd /var/jenkins_home && mv /var/jenkins_home/users/admin* . && mv /var/jenkins_home/users/beedemoops* . && cd /var/jenkins_home/users/ && rm -rf * && cd .. && mv admin* ./users/ && mv /var/jenkins_home/users/beedemoops* ./users/ && cp users.xml ./users/ && cd /var/jenkins_home/ && rm run-time-state.mv.db"')
           sh('kubectl -n core exec cjoc-0 -c jenkins reboot')
         } 
       }
