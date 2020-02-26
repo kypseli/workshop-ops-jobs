@@ -6,9 +6,6 @@ pipeline {
   }
   stages {
     stage('Create Workshop Recipes') {
-      when { 
-        branch 'master'
-      }
       steps {
         checkout scm
         echo "preparing Jenkins CLI"
