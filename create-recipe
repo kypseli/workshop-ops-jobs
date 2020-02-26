@@ -9,13 +9,15 @@ pipeline {
       when { 
         branch 'master'
       }
-      checkout scm
-      echo "preparing Jenkins CLI"
-      sh 'curl -O http://cjoc/cjoc/jnlpJars/jenkins-cli.jar'
-      withCredentials([usernamePassword(credentialsId: 'cli-username-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-        alias cli='java -jar jenkins-cli.jar -s \'http://cjoc/cjoc/\' -auth $USERNAME:$PASSWORD'
-        echo 'creating team recipes'
-        cli team-creation-recipes --put < team-recipes.json
+      steps {
+        checkout scm
+        echo "preparing Jenkins CLI"
+        sh 'curl -O http://cjoc/cjoc/jnlpJars/jenkins-cli.jar'
+        withCredentials([usernamePassword(credentialsId: 'cli-username-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+          alias cli='java -jar jenkins-cli.jar -s \'http://cjoc/cjoc/\' -auth $USERNAME:$PASSWORD'
+          echo 'creating team recipes'
+          cli team-creation-recipes --put < team-recipes.json
+        }
       }
     }
   }
